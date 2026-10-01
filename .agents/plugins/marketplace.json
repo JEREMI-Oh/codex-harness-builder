@@ -1,14 +1,14 @@
 {
-  "name": "codex-harness-builder-marketplace",
+  "name": "universal-agent-harness-marketplace",
   "interface": {
-    "displayName": "Codex Harness Builder"
+    "displayName": "Universal Agent Harness Builder"
   },
   "plugins": [
     {
-      "name": "codex-harness-builder",
+      "name": "universal-agent-harness-builder",
       "source": {
         "source": "local",
-        "path": "./plugins/codex-harness-builder"
+        "path": "./plugins/universal-harness-openai"
       },
       "policy": {
         "installation": "AVAILABLE",

@@ -1,0 +1,20 @@
+{
+  "name": "universal-agent-harness-builder",
+  "version": "0.2.0",
+  "description": "Build a project-aware, token-efficient coding-agent harness with shared context and platform adapters.",
+  "author": {
+    "name": "JEREMI-Oh",
+    "url": "https://github.com/JEREMI-Oh"
+  },
+  "license": "MIT",
+  "skills": "./skills/",
+  "homepage": "https://github.com/JEREMI-Oh/codex-harness-builder",
+  "repository": "https://github.com/JEREMI-Oh/codex-harness-builder",
+  "interface": {
+    "displayName": "Universal Agent Harness Builder",
+    "shortDescription": "Build lean coding-agent harnesses",
+    "longDescription": "Analyze a repository and create shared project context plus focused Codex subagent configuration.",
+    "developerName": "JEREMI-Oh",
+    "category": "Developer Tools"
+  }
+}

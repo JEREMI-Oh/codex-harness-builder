@@ -1,23 +1,13 @@
 # Contributing
 
-Contributions are welcome.
+1. Keep the core dependency-free unless a dependency has a clear cross-platform benefit.
+2. Never make bootstrap edit application source code.
+3. Preserve user-owned files; generated files must carry the product sentinel.
+4. Keep always-on instructions short. Put task-specific procedures in skills.
+5. Add tests for every new platform adapter or migration behavior.
 
-## Development
-
-Run the tests with:
+Run tests with:
 
 ```bash
 python -m unittest discover -s tests -v
 ```
-
-The project intentionally has no runtime Python dependencies.
-
-## Pull requests
-
-Please keep changes focused and preserve these invariants:
-
-- setup is non-destructive
-- repeated setup is idempotent
-- existing user content outside managed markers is preserved
-- small projects do not receive unnecessary agent configuration
-- secrets are never copied into generated context files

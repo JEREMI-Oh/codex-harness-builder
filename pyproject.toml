@@ -1,11 +1,9 @@
 [project]
-name = "codex-harness-builder"
-version = "0.1.0"
-description = "Token-efficient project harness generator for Codex"
+name = "universal-agent-harness-builder"
+version = "0.2.0"
+description = "Build token-efficient coding-agent harnesses for Codex, Antigravity, and Claude Code."
 requires-python = ">=3.10"
-license = {text = "MIT"}
-authors = [{name = "Codex Harness Builder Contributors"}]
+license = { text = "MIT" }
 
-[tool.ruff]
-line-length = 100
-
+[tool.pytest.ini_options]
+testpaths = ["tests"]

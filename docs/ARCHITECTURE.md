@@ -1,46 +1,33 @@
 # Architecture
 
-## V1
-
-Codex Harness Builder is intentionally skills-first and serverless.
+Universal Agent Harness Builder separates **project knowledge** from **runtime adapters**.
 
 ```text
-User request
-   |
-   v
-Plugin skill trigger
-   |
-   v
-scripts/harness.py
-   |
-   +--> repository analyzer
-   +--> complexity classifier
-   +--> managed-block writer
-   +--> custom-agent generator
-   +--> audit / compaction
-   |
-   v
-Target project
+Repository
+├─ AGENTS.md                    shared always-on instructions
+├─ .project-context/            durable project knowledge
+├─ .harness/                    manifest + complex execution plans
+├─ .codex/                      Codex adapter
+├─ .agents/                     Antigravity adapter
+└─ .claude/ + CLAUDE.md         Claude Code adapter
 ```
 
-No source code or project metadata is sent to a project-owned external service by the plugin itself. Codex's own execution environment and configured tools remain subject to their normal product behavior.
+## Shared layer
 
-## Why no MCP in V1
+`AGENTS.md` contains only compact cross-platform development rules. `.project-context/` stores durable facts, current architecture, decisions, reusable lessons, and current work. Agents are instructed to read only the relevant file instead of loading all context every turn.
 
-The first use case is local repository analysis and file generation. Adding a server would add authentication, deployment, tool-schema context, and operational overhead without being necessary for the core workflow.
+## Adapter layer
 
-## V2 candidates
+- **Codex:** `.codex/config.toml` and `.codex/agents/*.toml`.
+- **Antigravity:** `.agents/agents/*.md` plus model-decision rules under `.agents/rules/`.
+- **Claude Code:** `CLAUDE.md` imports `@AGENTS.md`; `.claude/agents/*.md` adds project subagents.
 
-A future optional MCP service could provide cross-project durable knowledge, shared organizational skills, solution lookup, or project history. It should remain opt-in so the default harness stays lean.
+## Complexity policy
 
-## Context model
+- SMALL: common context only; no custom roles by default.
+- MEDIUM: researcher, developer, tester, reviewer.
+- LARGE: architect plus the MEDIUM roles and durable plan scaffolding.
 
-- `AGENTS.md`: small, always-relevant operating rules.
-- `.project-context/PROJECT.md`: stable facts and entry points.
-- `.project-context/ARCHITECTURE.md`: current system structure.
-- `.project-context/DECISIONS.md`: durable design decisions.
-- `.project-context/MEMORY.md`: deliberately small non-secret memory.
-- `.project-context/LESSONS.md`: reusable failure/solution patterns.
-- `.project-context/TODO.md`: current work.
+## Non-destructive ownership
 
-This separation avoids turning a single instruction file into an ever-growing prompt.
+Managed blocks are delimited with `UNIVERSAL-HARNESS` markers. Generated standalone files contain a generator sentinel. User-owned files without that sentinel are never overwritten.

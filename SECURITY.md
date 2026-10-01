@@ -1,11 +1,8 @@
 # Security
 
-Codex Harness Builder is designed to work on local repository metadata and text files.
+The harness builder is designed to operate locally and does not require credentials or an MCP server in V0.2.
 
-## Sensitive data
-
-The generator does not intentionally collect or transmit repository content. V1 includes no MCP server and no telemetry. Generated instructions tell agents not to place passwords, tokens, private keys, or credentials into project memory files.
-
-## Reporting
-
-For a public fork, use GitHub private vulnerability reporting when enabled by the repository owner. Do not include real secrets in reports.
+- Do not place API keys, access tokens, passwords, private keys, or secrets in `.project-context/`.
+- The audit command scans `MEMORY.md` for common secret-like patterns but is not a complete secret scanner.
+- Bootstrap/update never intentionally modify application source code.
+- Existing unowned agent/rule files are preserved and reported as conflicts.

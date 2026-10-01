@@ -1,0 +1,40 @@
+{
+  "$schema": "https://agent-plugins.org/schemas/1.0.0/plugin.schema.json",
+  "name": "universal-agent-harness-builder",
+  "version": "0.2.0",
+  "description": "Build a project-aware, token-efficient coding-agent harness for Codex, Antigravity, and Claude Code, with shared project context and platform adapters.",
+  "author": {
+    "name": "JEREMI-Oh",
+    "url": "https://github.com/JEREMI-Oh"
+  },
+  "license": "MIT",
+  "homepage": "https://github.com/JEREMI-Oh/codex-harness-builder",
+  "repository": "https://github.com/JEREMI-Oh/codex-harness-builder",
+  "keywords": [
+    "codex",
+    "antigravity",
+    "claude-code",
+    "agents",
+    "multi-agent",
+    "harness",
+    "context-engineering"
+  ],
+  "extensions": {
+    "com.openai": {
+      "interface": {
+        "displayName": "Universal Agent Harness Builder",
+        "shortDescription": "Build lean coding-agent harnesses",
+        "longDescription": "Analyze an existing or new software repository and create shared project context plus a Codex adapter. The same repository also ships Antigravity and Claude Code adapters. Existing files are preserved outside managed blocks.",
+        "developerName": "JEREMI-Oh",
+        "category": "Developer Tools",
+        "capabilities": [
+          "Analyze repository stack and complexity",
+          "Generate shared project context",
+          "Configure focused Codex subagents",
+          "Migrate legacy Codex harnesses",
+          "Audit and compact context"
+        ]
+      }
+    }
+  }
+}

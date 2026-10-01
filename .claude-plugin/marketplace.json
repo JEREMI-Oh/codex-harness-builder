@@ -1,0 +1,19 @@
+{
+  "name": "universal-agent-harness",
+  "owner": {
+    "name": "JEREMI-Oh",
+    "url": "https://github.com/JEREMI-Oh"
+  },
+  "description": "Universal harness builder for Codex, Google Antigravity, and Claude Code.",
+  "plugins": [
+    {
+      "name": "universal-agent-harness-builder",
+      "source": "./plugins/universal-harness-claude",
+      "description": "Builds a token-efficient, project-aware coding agent harness with shared context and platform-specific adapters.",
+      "version": "0.2.0",
+      "author": {
+        "name": "JEREMI-Oh"
+      }
+    }
+  ]
+}

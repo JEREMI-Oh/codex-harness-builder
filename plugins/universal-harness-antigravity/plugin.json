@@ -1,0 +1,5 @@
+{
+  "name": "universal-agent-harness-builder",
+  "version": "0.2.0",
+  "description": "Build shared project context and Antigravity custom agents/rules for token-efficient development."
+}

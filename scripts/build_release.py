@@ -1,43 +1,57 @@
-#!/usr/bin/env python3
 from __future__ import annotations
 
-import argparse
+import shutil
 import zipfile
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[1]
-PLUGIN = ROOT / "plugins" / "codex-harness-builder"
-IGNORE = {".git", "__pycache__", ".pytest_cache", ".venv", "dist"}
+VERSION = "0.2.0"
+DIST = ROOT / "dist"
+PLUGINS = {
+    "openai": ROOT / "plugins" / "universal-harness-openai",
+    "antigravity": ROOT / "plugins" / "universal-harness-antigravity",
+    "claude": ROOT / "plugins" / "universal-harness-claude",
+}
 
 
-def add_tree(zf: zipfile.ZipFile, source: Path, prefix: str = "") -> None:
-    for path in sorted(source.rglob("*")):
-        if path.is_dir() or any(part in IGNORE for part in path.parts):
+def sync_core() -> None:
+    source = ROOT / "src" / "harness.py"
+    for plugin in PLUGINS.values():
+        target = plugin / "scripts" / "harness.py"
+        target.parent.mkdir(parents=True, exist_ok=True)
+        shutil.copy2(source, target)
+
+
+def add_tree(zf: zipfile.ZipFile, base: Path, prefix: str, excludes: set[str] | None = None) -> None:
+    excludes = excludes or set()
+    for path in sorted(base.rglob("*")):
+        if not path.is_file():
             continue
-        rel = path.relative_to(source).as_posix()
-        arc = f"{prefix}/{rel}" if prefix else rel
-        zf.write(path, arc)
+        rel = path.relative_to(base)
+        if any(part in excludes for part in rel.parts):
+            continue
+        zf.write(path, f"{prefix}/{rel.as_posix()}")
 
 
-def main() -> int:
-    parser = argparse.ArgumentParser()
-    parser.add_argument("--version", default="0.1.0")
-    args = parser.parse_args()
-    dist = ROOT / "dist"
-    dist.mkdir(exist_ok=True)
+def main() -> None:
+    sync_core()
+    if DIST.exists():
+        shutil.rmtree(DIST)
+    DIST.mkdir()
 
-    repo_zip = dist / f"codex-harness-builder-v{args.version}.zip"
-    plugin_zip = dist / f"codex-harness-builder-plugin-v{args.version}.zip"
+    source_zip = DIST / f"universal-agent-harness-builder-v{VERSION}.zip"
+    with zipfile.ZipFile(source_zip, "w", zipfile.ZIP_DEFLATED) as zf:
+        add_tree(zf, ROOT, "universal-agent-harness-builder", {"dist", ".git", "__pycache__", ".pytest_cache"})
 
-    with zipfile.ZipFile(repo_zip, "w", zipfile.ZIP_DEFLATED) as zf:
-        add_tree(zf, ROOT, "codex-harness-builder")
-    with zipfile.ZipFile(plugin_zip, "w", zipfile.ZIP_DEFLATED) as zf:
-        add_tree(zf, PLUGIN)
+    for platform, plugin in PLUGINS.items():
+        out = DIST / f"universal-agent-harness-builder-{platform}-v{VERSION}.zip"
+        with zipfile.ZipFile(out, "w", zipfile.ZIP_DEFLATED) as zf:
+            add_tree(zf, plugin, "universal-agent-harness-builder", {"__pycache__"})
 
-    print(repo_zip)
-    print(plugin_zip)
-    return 0
+    print(source_zip)
+    for p in sorted(DIST.glob("*.zip")):
+        print(p)
 
 
 if __name__ == "__main__":
-    raise SystemExit(main())
+    main()

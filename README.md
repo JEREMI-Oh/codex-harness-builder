@@ -1,206 +1,70 @@
-# Codex Harness Builder
+# Universal Agent Harness Builder v0.2.0
 
-A token-efficient, project-aware development harness generator for Codex.
+A dependency-free, non-destructive harness builder for **OpenAI Codex**, **Google Antigravity**, and **Anthropic Claude Code**.
 
-`Codex Harness Builder` analyzes the current repository and creates only the minimum Codex harness the project needs: concise `AGENTS.md` rules, custom subagent roles, project context, decision/lesson logs, and lightweight planning scaffolding.
-
-## What it does
-
-After installation, ask Codex:
-
-> 하네스 구성해줘
-
-or:
-
-> Build a development harness for this project.
-
-The bundled skill guides Codex to analyze the repository and run the non-destructive harness generator.
-
-### Generated structure
-
-Depending on repository complexity, it can create:
+It keeps project knowledge in one shared layer and generates only the runtime-specific adapter you need.
 
 ```text
-AGENTS.md
-.codex/
-  config.toml
-  agents/
-    architect.toml
-    researcher.toml
-    developer.toml
-    tester.toml
-    reviewer.toml
-.project-context/
-  PROJECT.md
-  ARCHITECTURE.md
-  DECISIONS.md
-  MEMORY.md
-  LESSONS.md
-  TODO.md
-.agent/
-  PLANS.md
-  plans/
+PROJECT/
+├─ AGENTS.md
+├─ .project-context/
+├─ .harness/
+├─ .codex/                 # Codex adapter
+├─ .agents/                # Antigravity adapter
+└─ .claude/ + CLAUDE.md    # Claude Code adapter
 ```
 
-Small projects receive a reduced harness. Medium and large projects get additional agent roles only when useful.
+## Commands
+
+```bash
+python src/harness.py analyze --project /path/to/repo
+python src/harness.py init --project /path/to/repo --target codex
+python src/harness.py init --project /path/to/repo --target antigravity
+python src/harness.py init --project /path/to/repo --target claude-code
+python src/harness.py init --project /path/to/repo --target all
+python src/harness.py update --project /path/to/repo --target auto
+python src/harness.py audit --project /path/to/repo --target auto
+python src/harness.py compact --project /path/to/repo --target auto
+python src/harness.py migrate --project /path/to/repo --target all
+```
+
+Use `--dry-run` with init/update/migrate/compact to preview changes.
+
+## Install as a Codex plugin
+
+```bash
+codex plugin marketplace add JEREMI-Oh/codex-harness-builder --ref main
+```
+
+Then install **Universal Agent Harness Builder** from `/plugins` and ask `하네스 구성해줘` or “configure the project harness”.
+
+## Install in Antigravity
+
+Copy `plugins/universal-harness-antigravity` to either:
+
+- `<workspace>/.agents/plugins/universal-agent-harness-builder/`
+- `~/.gemini/config/plugins/universal-agent-harness-builder/`
+
+On Windows you can run `scripts/install_antigravity.ps1`.
+
+## Install in Claude Code
+
+```bash
+claude plugin marketplace add JEREMI-Oh/codex-harness-builder
+claude plugin install universal-agent-harness-builder@universal-agent-harness
+```
+
+Claude Code receives shared instructions through a generated `CLAUDE.md` that imports `@AGENTS.md`.
 
 ## Design goals
 
-- **Minimal context first** — do not scan the entire repository unless necessary.
-- **Non-destructive** — preserve existing project instructions and settings.
-- **Idempotent** — running setup repeatedly should not duplicate managed blocks.
-- **Role separation** — architecture, research, implementation, testing, and review can be delegated independently.
-- **Durable knowledge** — decisions and reusable lessons are recorded separately from chat history.
-- **No mandatory MCP server** — V1 is skills + local scripts only.
-- **No secrets in memory** — generated instructions explicitly prohibit storing credentials in project memory files.
+- minimal always-on context
+- project-aware but non-destructive setup
+- role-based subagents only when complexity justifies them
+- shared durable knowledge without duplicating it across runtimes
+- migration from the V0.1 Codex-only harness
+- no MCP server required for V0.2
 
-## Requirements
+See `README.ko.md`, `docs/ARCHITECTURE.md`, `docs/INSTALLATION.md`, and `docs/MIGRATION.md`.
 
-- Codex / ChatGPT desktop environment with plugin marketplace support
-- Python 3.10+ for the bundled repository analyzer/generator
-
-The runtime uses only the Python standard library.
-
-## Install from a GitHub marketplace
-
-Once this repository is published as `OWNER/codex-harness-builder`:
-
-```bash
-codex plugin marketplace add OWNER/codex-harness-builder
-```
-
-Then open the Plugins Directory in ChatGPT/Codex desktop, choose **Codex Harness Builder**, and install it.
-
-The marketplace catalog is included at:
-
-```text
-.agents/plugins/marketplace.json
-```
-
-## Local installation / testing
-
-From the repository root:
-
-```bash
-codex plugin marketplace add .
-```
-
-Restart the desktop app, open the Plugins Directory, and install **Codex Harness Builder**.
-
-## Natural-language commands
-
-The plugin includes focused skills for these intents:
-
-- `하네스 구성해줘` / `build a project harness`
-- `하네스 업데이트해줘` / `update the harness`
-- `하네스 점검해줘` / `audit the harness`
-- `하네스 경량화해줘` / `compact the harness`
-
-## CLI
-
-You can also run the generator manually:
-
-```bash
-python plugins/codex-harness-builder/scripts/harness.py analyze --project .
-python plugins/codex-harness-builder/scripts/harness.py init --project .
-python plugins/codex-harness-builder/scripts/harness.py update --project .
-python plugins/codex-harness-builder/scripts/harness.py audit --project .
-python plugins/codex-harness-builder/scripts/harness.py compact --project .
-```
-
-Preview changes without writing:
-
-```bash
-python plugins/codex-harness-builder/scripts/harness.py init --project . --dry-run
-```
-
-## How the harness chooses agents
-
-### Small
-
-Typical: scripts, tiny sites, utilities.
-
-- concise `AGENTS.md`
-- project context
-- no custom subagents by default
-
-### Medium
-
-Typical: web apps, internal systems, APIs.
-
-- Researcher
-- Developer
-- Tester
-- Reviewer
-
-### Large
-
-Typical: SaaS, multi-service, monorepos, complex production systems.
-
-- Architect
-- Researcher
-- Developer
-- Tester
-- Reviewer
-- planning scaffold
-
-## Token-efficiency rules
-
-The generated instructions tell Codex to:
-
-1. Locate relevant files before reading broad areas.
-2. Pass only task-specific context to subagents.
-3. Keep simple dependent tasks in the main agent.
-4. Use subagents for independent or specialized work.
-5. Avoid re-reading long PRDs and architecture docs unless required.
-6. Keep `MEMORY.md` to stable facts only.
-7. Record reusable solutions in `LESSONS.md` rather than expanding `AGENTS.md`.
-8. Keep completion reports short.
-
-## Safety and file ownership
-
-Managed sections use markers:
-
-```text
-<!-- CODEX-HARNESS:START -->
-...
-<!-- CODEX-HARNESS:END -->
-```
-
-For TOML:
-
-```text
-# CODEX-HARNESS:START
-...
-# CODEX-HARNESS:END
-```
-
-Existing content outside those markers is preserved. Agent role files are created only if absent or previously generated by this tool.
-
-## Repository layout
-
-```text
-codex-harness-builder/
-├── .agents/plugins/marketplace.json
-├── .github/workflows/test.yml
-├── plugins/codex-harness-builder/
-│   ├── plugin.json
-│   ├── .codex-plugin/plugin.json
-│   ├── skills/
-│   │   ├── harness-bootstrap/SKILL.md
-│   │   ├── harness-update/SKILL.md
-│   │   ├── harness-audit/SKILL.md
-│   │   └── harness-compact/SKILL.md
-│   └── scripts/harness.py
-├── tests/test_harness.py
-├── LICENSE
-└── README.md
-```
-
-## Public directory publication
-
-This repository is immediately usable as a Git/repo marketplace source. Publishing to the universal OpenAI Plugins Directory is a separate review/submission step. The skills-only package intentionally has no remote MCP dependency.
-
-## License
-
-MIT
+MIT License.
