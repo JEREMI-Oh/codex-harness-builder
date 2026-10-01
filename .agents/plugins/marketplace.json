@@ -1,0 +1,20 @@
+{
+  "name": "codex-harness-builder-marketplace",
+  "interface": {
+    "displayName": "Codex Harness Builder"
+  },
+  "plugins": [
+    {
+      "name": "codex-harness-builder",
+      "source": {
+        "source": "local",
+        "path": "./plugins/codex-harness-builder"
+      },
+      "policy": {
+        "installation": "AVAILABLE",
+        "authentication": "ON_INSTALL"
+      },
+      "category": "Developer Tools"
+    }
+  ]
+}

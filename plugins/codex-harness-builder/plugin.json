@@ -1,0 +1,38 @@
+{
+  "$schema": "https://agent-plugins.org/schemas/1.0.0/plugin.schema.json",
+  "name": "codex-harness-builder",
+  "version": "0.1.0",
+  "description": "Analyze a software repository and build a minimal, token-efficient Codex development harness with project context and custom agent roles.",
+  "author": {
+    "name": "JEREMI-Oh",
+    "url": "https://github.com/JEREMI-Oh"
+  },
+  "license": "MIT",
+  "keywords": [
+    "codex",
+    "developer-tools",
+    "agents",
+    "multi-agent",
+    "harness",
+    "context-engineering"
+  ],
+  "extensions": {
+    "com.openai": {
+      "interface": {
+        "displayName": "Codex Harness Builder",
+        "shortDescription": "Build a lean Codex harness",
+        "longDescription": "Analyze the current software repository and create a non-destructive, token-efficient Codex development harness. It can generate concise AGENTS.md guidance, project context files, role-specific subagent configurations, decision and lesson logs, and planning scaffolding based on repository complexity. V1 is skills-only and does not connect to external services.",
+        "developerName": "JEREMI-Oh",
+        "category": "Developer Tools",
+        "capabilities": [
+          "Analyze repository stack and complexity",
+          "Generate project-aware Codex harness files",
+          "Configure focused custom subagent roles",
+          "Audit and compact harness context"
+        ]
+      }
+    }
+  },
+  "homepage": "https://github.com/JEREMI-Oh/codex-harness-builder",
+  "repository": "https://github.com/JEREMI-Oh/codex-harness-builder"
+}

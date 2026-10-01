@@ -1,0 +1,222 @@
+# Codex Harness Builder
+
+A token-efficient, project-aware development harness generator for Codex.
+
+`Codex Harness Builder` analyzes the current repository and creates only the minimum Codex harness the project needs: concise `AGENTS.md` rules, custom subagent roles, project context, decision/lesson logs, and lightweight planning scaffolding.
+
+## What it does
+
+After installation, ask Codex:
+
+> 하네스 구성해줘
+
+or:
+
+> Build a development harness for this project.
+
+The bundled skill guides Codex to analyze the repository and run the non-destructive harness generator.
+
+### Generated structure
+
+Depending on repository complexity, it can create:
+
+```text
+AGENTS.md
+.codex/
+  config.toml
+  agents/
+    architect.toml
+    researcher.toml
+    developer.toml
+    tester.toml
+    reviewer.toml
+.project-context/
+  PROJECT.md
+  ARCHITECTURE.md
+  DECISIONS.md
+  MEMORY.md
+  LESSONS.md
+  TODO.md
+.agent/
+  PLANS.md
+  plans/
+```
+
+Small projects receive a reduced harness. Medium and large projects get additional agent roles only when useful.
+
+## Design goals
+
+- **Minimal context first** — do not scan the entire repository unless necessary.
+- **Non-destructive** — preserve existing project instructions and settings.
+- **Idempotent** — running setup repeatedly should not duplicate managed blocks.
+- **Role separation** — architecture, research, implementation, testing, and review can be delegated independently.
+- **Durable knowledge** — decisions and reusable lessons are recorded separately from chat history.
+- **No mandatory MCP server** — V1 is skills + local scripts only.
+- **No secrets in memory** — generated instructions explicitly prohibit storing credentials in project memory files.
+
+## Requirements
+
+- Codex / ChatGPT desktop environment with plugin marketplace support
+- Python 3.10+ for the bundled repository analyzer/generator
+
+The runtime uses only the Python standard library.
+
+## Publish the repository
+
+On a machine with authenticated GitHub CLI:
+
+```bash
+./scripts/publish_github.sh
+```
+
+On Windows PowerShell:
+
+```powershell
+./scripts/publish_github.ps1
+```
+
+The helper creates `JEREMI-Oh/codex-harness-builder` as a public repository when it does not already exist, then pushes `main`.
+
+## Install from a GitHub marketplace
+
+Once this repository is published as `JEREMI-Oh/codex-harness-builder`:
+
+```bash
+codex plugin marketplace add JEREMI-Oh/codex-harness-builder
+```
+
+Then open the Plugins Directory in ChatGPT/Codex desktop, choose **Codex Harness Builder**, and install it.
+
+The marketplace catalog is included at:
+
+```text
+.agents/plugins/marketplace.json
+```
+
+## Local installation / testing
+
+From the repository root:
+
+```bash
+codex plugin marketplace add .
+```
+
+Restart the desktop app, open the Plugins Directory, and install **Codex Harness Builder**.
+
+## Natural-language commands
+
+The plugin includes focused skills for these intents:
+
+- `하네스 구성해줘` / `build a project harness`
+- `하네스 업데이트해줘` / `update the harness`
+- `하네스 점검해줘` / `audit the harness`
+- `하네스 경량화해줘` / `compact the harness`
+
+## CLI
+
+You can also run the generator manually:
+
+```bash
+python plugins/codex-harness-builder/scripts/harness.py analyze --project .
+python plugins/codex-harness-builder/scripts/harness.py init --project .
+python plugins/codex-harness-builder/scripts/harness.py update --project .
+python plugins/codex-harness-builder/scripts/harness.py audit --project .
+python plugins/codex-harness-builder/scripts/harness.py compact --project .
+```
+
+Preview changes without writing:
+
+```bash
+python plugins/codex-harness-builder/scripts/harness.py init --project . --dry-run
+```
+
+## How the harness chooses agents
+
+### Small
+
+Typical: scripts, tiny sites, utilities.
+
+- concise `AGENTS.md`
+- project context
+- no custom subagents by default
+
+### Medium
+
+Typical: web apps, internal systems, APIs.
+
+- Researcher
+- Developer
+- Tester
+- Reviewer
+
+### Large
+
+Typical: SaaS, multi-service, monorepos, complex production systems.
+
+- Architect
+- Researcher
+- Developer
+- Tester
+- Reviewer
+- planning scaffold
+
+## Token-efficiency rules
+
+The generated instructions tell Codex to:
+
+1. Locate relevant files before reading broad areas.
+2. Pass only task-specific context to subagents.
+3. Keep simple dependent tasks in the main agent.
+4. Use subagents for independent or specialized work.
+5. Avoid re-reading long PRDs and architecture docs unless required.
+6. Keep `MEMORY.md` to stable facts only.
+7. Record reusable solutions in `LESSONS.md` rather than expanding `AGENTS.md`.
+8. Keep completion reports short.
+
+## Safety and file ownership
+
+Managed sections use markers:
+
+```text
+<!-- CODEX-HARNESS:START -->
+...
+<!-- CODEX-HARNESS:END -->
+```
+
+For TOML:
+
+```text
+# CODEX-HARNESS:START
+...
+# CODEX-HARNESS:END
+```
+
+Existing content outside those markers is preserved. Agent role files are created only if absent or previously generated by this tool.
+
+## Repository layout
+
+```text
+codex-harness-builder/
+├── .agents/plugins/marketplace.json
+├── .github/workflows/test.yml
+├── plugins/codex-harness-builder/
+│   ├── plugin.json
+│   ├── .codex-plugin/plugin.json
+│   ├── skills/
+│   │   ├── harness-bootstrap/SKILL.md
+│   │   ├── harness-update/SKILL.md
+│   │   ├── harness-audit/SKILL.md
+│   │   └── harness-compact/SKILL.md
+│   └── scripts/harness.py
+├── tests/test_harness.py
+├── LICENSE
+└── README.md
+```
+
+## Public directory publication
+
+This repository is immediately usable as a Git/repo marketplace source. Publishing to the universal OpenAI Plugins Directory is a separate review/submission step. The skills-only package intentionally has no remote MCP dependency.
+
+## License
+
+MIT

@@ -1,0 +1,33 @@
+{
+  "name": "codex-harness-builder",
+  "version": "0.1.0",
+  "description": "Analyze a software repository and build a minimal, token-efficient Codex development harness with project context and custom agent roles.",
+  "author": {
+    "name": "JEREMI-Oh",
+    "url": "https://github.com/JEREMI-Oh"
+  },
+  "license": "MIT",
+  "keywords": [
+    "codex",
+    "developer-tools",
+    "agents",
+    "multi-agent",
+    "harness"
+  ],
+  "skills": "./skills/",
+  "interface": {
+    "displayName": "Codex Harness Builder",
+    "shortDescription": "Build a lean Codex harness",
+    "longDescription": "Analyze the current repository and create a non-destructive, token-efficient Codex development harness with concise instructions, project context, custom subagent roles, and audit/compaction workflows.",
+    "developerName": "JEREMI-Oh",
+    "category": "Developer Tools",
+    "capabilities": [
+      "Analyze repository stack and complexity",
+      "Generate Codex harness files",
+      "Configure subagent roles",
+      "Audit and compact context"
+    ]
+  },
+  "homepage": "https://github.com/JEREMI-Oh/codex-harness-builder",
+  "repository": "https://github.com/JEREMI-Oh/codex-harness-builder"
+}

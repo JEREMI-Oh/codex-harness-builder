@@ -1,0 +1,11 @@
+[project]
+name = "codex-harness-builder"
+version = "0.1.0"
+description = "Token-efficient project harness generator for Codex"
+requires-python = ">=3.10"
+license = {text = "MIT"}
+authors = [{name = "Codex Harness Builder Contributors"}]
+
+[tool.ruff]
+line-length = 100
+
