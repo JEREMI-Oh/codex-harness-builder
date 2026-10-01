@@ -61,28 +61,12 @@ Small projects receive a reduced harness. Medium and large projects get addition
 
 The runtime uses only the Python standard library.
 
-## Publish the repository
-
-On a machine with authenticated GitHub CLI:
-
-```bash
-./scripts/publish_github.sh
-```
-
-On Windows PowerShell:
-
-```powershell
-./scripts/publish_github.ps1
-```
-
-The helper creates `JEREMI-Oh/codex-harness-builder` as a public repository when it does not already exist, then pushes `main`.
-
 ## Install from a GitHub marketplace
 
-Once this repository is published as `JEREMI-Oh/codex-harness-builder`:
+Once this repository is published as `OWNER/codex-harness-builder`:
 
 ```bash
-codex plugin marketplace add JEREMI-Oh/codex-harness-builder
+codex plugin marketplace add OWNER/codex-harness-builder
 ```
 
 Then open the Plugins Directory in ChatGPT/Codex desktop, choose **Codex Harness Builder**, and install it.
